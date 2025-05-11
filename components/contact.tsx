@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({
@@ -16,7 +16,7 @@ const ContactSection = () => {
   );
   const formRef = useRef<HTMLFormElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { once: false, margin: "-100px" });
+  const isInView = useInView(sectionRef, { margin: "-100px", once: false });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -35,7 +35,7 @@ const ContactSection = () => {
       await new Promise((resolve) => setTimeout(resolve, 1500));
       setFormStatus("success");
       setFormData({ name: "", email: "", subject: "", message: "" });
-    } catch (error) {
+    } catch (_) {
       setFormStatus("error");
     } finally {
       setIsSubmitting(false);
@@ -75,12 +75,12 @@ const ContactSection = () => {
 
   return (
     <div
+      className="relative px-4 py-16 md:px-8 md:py-24 lg:px-12"
       ref={sectionRef}
-      className="py-16 md:py-24 px-4 md:px-8 lg:px-12 relative"
     >
       {/* Background elements */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-slate-50/30 dark:to-gray-900/30" />
+        <div className="absolute top-0 left-0 h-full w-full bg-gradient-to-b from-transparent to-slate-50/30 dark:to-gray-900/30" />
 
         <motion.div
           animate={{
@@ -88,7 +88,7 @@ const ContactSection = () => {
             y: [0, -20, 0],
             scale: [1, 1.1, 1],
           }}
-          className="absolute top-20 right-20 w-64 h-64 rounded-full opacity-20 dark:opacity-10 bg-gradient-to-r from-blue-400 to-purple-400 blur-3xl"
+          className="absolute top-20 right-20 h-64 w-64 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 opacity-20 blur-3xl dark:opacity-10"
           transition={{
             duration: 15,
             repeat: Infinity,
@@ -102,7 +102,7 @@ const ContactSection = () => {
             y: [0, 20, 0],
             scale: [1, 1.1, 1],
           }}
-          className="absolute bottom-20 left-20 w-72 h-72 rounded-full opacity-20 dark:opacity-10 bg-gradient-to-r from-purple-400 to-pink-400 blur-3xl"
+          className="absolute bottom-20 left-20 h-72 w-72 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 opacity-20 blur-3xl dark:opacity-10"
           transition={{
             duration: 18,
             repeat: Infinity,
@@ -114,28 +114,28 @@ const ContactSection = () => {
       <div className="container mx-auto max-w-6xl">
         <motion.div
           animate={isInView ? "visible" : "hidden"}
-          className="flex flex-col lg:flex-row gap-12 lg:gap-16"
+          className="flex flex-col gap-12 lg:flex-row lg:gap-16"
           initial="hidden"
           variants={containerVariants}
         >
           {/* Left Column - Contact Info */}
           <motion.div className="w-full lg:w-2/5" variants={itemVariants}>
             <motion.div className="mb-8" variants={itemVariants}>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              <h2 className="mb-4 text-3xl font-bold text-gray-900 dark:text-white md:text-4xl">
                 Get in{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-500">
+                <span className="bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
                   Touch
                 </span>
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-300">
-                I'm always open to new opportunities, collaborations, and
+                I&apos;m always open to new opportunities, collaborations, and
                 interesting projects. Feel free to reach out!
               </p>
             </motion.div>
 
             <motion.div className="space-y-6" variants={itemVariants}>
               <div className="flex items-start space-x-4">
-                <div className="mt-1 p-3 rounded-xl bg-white dark:bg-gray-800 shadow-md">
+                <div className="mt-1 rounded-xl bg-white p-3 shadow-md dark:bg-gray-800">
                   <svg
                     className="h-6 w-6 text-purple-500"
                     fill="none"
@@ -162,7 +162,7 @@ const ContactSection = () => {
               </div>
 
               <div className="flex items-start space-x-4">
-                <div className="mt-1 p-3 rounded-xl bg-white dark:bg-gray-800 shadow-md">
+                <div className="mt-1 rounded-xl bg-white p-3 shadow-md dark:bg-gray-800">
                   <svg
                     className="h-6 w-6 text-blue-500"
                     fill="none"
@@ -196,19 +196,19 @@ const ContactSection = () => {
             </motion.div>
 
             <motion.div className="mt-10" variants={itemVariants}>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
                 Connect with me
               </h3>
               <div className="flex space-x-4">
                 {/* Social Media Icons */}
                 {["github", "linkedin", "twitter", "dribbble"].map((social) => (
                   <motion.a
-                    key={social}
-                    className="p-3 rounded-full bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-shadow"
+                    className="rounded-full bg-white p-3 shadow-md transition-shadow hover:shadow-lg dark:bg-gray-800"
                     href={`https://${social}.com`}
+                    key={social}
                     rel="noopener noreferrer"
                     target="_blank"
-                    whileHover={{ y: -3, scale: 1.05 }}
+                    whileHover={{ scale: 1.05, y: -3 }}
                     whileTap={{ scale: 0.98 }}
                   >
                     <svg
@@ -254,102 +254,102 @@ const ContactSection = () => {
           {/* Right Column - Contact Form */}
           <motion.div className="w-full lg:w-3/5" variants={itemVariants}>
             <motion.div
-              className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 md:p-8"
+              className="rounded-xl bg-white p-6 shadow-xl dark:bg-gray-800 md:p-8"
               variants={itemVariants}
             >
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+              <h3 className="mb-6 text-2xl font-bold text-gray-900 dark:text-white">
                 Send a Message
               </h3>
 
-              <form ref={formRef} className="space-y-5" onSubmit={handleSubmit}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <form className="space-y-5" onSubmit={handleSubmit} ref={formRef}>
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                   <motion.div variants={itemVariants}>
                     <label
-                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                      className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
                       htmlFor="name"
                     >
                       Your Name
                     </label>
                     <input
-                      required
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                       id="name"
                       name="name"
+                      onChange={handleChange}
                       placeholder="John Doe"
+                      required
                       type="text"
                       value={formData.name}
-                      onChange={handleChange}
                     />
                   </motion.div>
 
                   <motion.div variants={itemVariants}>
                     <label
-                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                      className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
                       htmlFor="email"
                     >
                       Email Address
                     </label>
                     <input
-                      required
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                       id="email"
                       name="email"
+                      onChange={handleChange}
                       placeholder="john@example.com"
+                      required
                       type="email"
                       value={formData.email}
-                      onChange={handleChange}
                     />
                   </motion.div>
                 </div>
 
                 <motion.div variants={itemVariants}>
                   <label
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
                     htmlFor="subject"
                   >
                     Subject
                   </label>
                   <input
-                    required
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                    className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                     id="subject"
                     name="subject"
+                    onChange={handleChange}
                     placeholder="Project Inquiry"
+                    required
                     type="text"
                     value={formData.subject}
-                    onChange={handleChange}
                   />
                 </motion.div>
 
                 <motion.div variants={itemVariants}>
                   <label
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
                     htmlFor="message"
                   >
                     Message
                   </label>
                   <textarea
-                    required
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                    className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                     id="message"
                     name="message"
+                    onChange={handleChange}
                     placeholder="Your message here..."
+                    required
                     rows={5}
                     value={formData.message}
-                    onChange={handleChange}
                   />
                 </motion.div>
 
                 <motion.div className="pt-2" variants={itemVariants}>
                   <button
-                    className="w-full px-6 py-3 rounded-lg bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium text-base shadow-lg shadow-purple-500/20 hover:shadow-purple-500/30 transition-all duration-300 relative overflow-hidden disabled:opacity-70"
+                    className="relative w-full overflow-hidden rounded-lg bg-gradient-to-r from-purple-600 to-blue-500 px-6 py-3 text-base font-medium text-white shadow-lg shadow-purple-500/20 transition-all duration-300 hover:shadow-purple-500/30 disabled:opacity-70"
                     disabled={isSubmitting}
                     type="submit"
                   >
                     {isSubmitting ? (
                       <span className="flex items-center justify-center">
                         <svg
-                          className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                          className="h-5 w-5 -ml-1 mr-3 animate-spin text-white"
                           fill="none"
                           viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"
@@ -395,7 +395,7 @@ const ContactSection = () => {
                   {formStatus && (
                     <motion.div
                       animate={{ opacity: 1, y: 0 }}
-                      className={`mt-4 p-3 rounded-lg ${
+                      className={`mt-4 rounded-lg p-3 ${
                         formStatus === "success"
                           ? "bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-400"
                           : "bg-red-100 text-red-800 dark:bg-red-800/20 dark:text-red-400"
@@ -406,7 +406,7 @@ const ContactSection = () => {
                       {formStatus === "success" ? (
                         <div className="flex items-center">
                           <svg
-                            className="h-5 w-5 mr-2"
+                            className="mr-2 h-5 w-5"
                             fill="currentColor"
                             viewBox="0 0 20 20"
                           >
@@ -421,7 +421,7 @@ const ContactSection = () => {
                       ) : (
                         <div className="flex items-center">
                           <svg
-                            className="h-5 w-5 mr-2"
+                            className="mr-2 h-5 w-5"
                             fill="currentColor"
                             viewBox="0 0 20 20"
                           >
