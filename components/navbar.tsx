@@ -7,37 +7,6 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 
 // Custom icons
-const CodeIcon = () => (
-  <svg
-    fill="none"
-    height="24"
-    viewBox="0 0 24 24"
-    width="24"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <motion.path
-      animate={{ pathLength: 1 }}
-      d="M16 18L22 12L16 6"
-      initial={{ pathLength: 0 }}
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      transition={{ duration: 1, ease: "easeInOut" }}
-    />
-    <motion.path
-      animate={{ pathLength: 1 }}
-      d="M8 6L2 12L8 18"
-      initial={{ pathLength: 0 }}
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      transition={{ duration: 1, ease: "easeInOut", delay: 0.3 }}
-    />
-  </svg>
-);
-
 const MenuIcon = () => (
   <svg
     fill="none"
@@ -355,7 +324,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({ closeProfile }) => {
         exit={{ scale: 0.8, opacity: 0 }}
         initial={{ scale: 0.8, opacity: 0 }}
         transition={{ type: "spring", damping: 25, stiffness: 300 }}
-        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking the modal itself
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Header with larger image */}
         <div className="relative h-36 bg-gradient-to-r from-purple-600 to-blue-500">
@@ -510,13 +479,10 @@ interface NavbarProps {
 }
 
 export default function Navbar({ onNavigate }: NavbarProps) {
-  const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const [showProfile, setShowProfile] = useState(false);
-  const { resolvedTheme, setTheme } = useTheme();
-  const pathname = usePathname();
-  const profileButtonRef = useRef(null);
+  const profileButtonRef = useRef<HTMLButtonElement>(null);
 
   // Navigation items
   const navItems = [
@@ -533,8 +499,6 @@ export default function Navbar({ onNavigate }: NavbarProps) {
   ];
 
   useEffect(() => {
-    setMounted(true);
-
     // Scroll spy functionality to highlight the current section
     const handleScroll = () => {
       const scrollPosition = window.scrollY + 100; // Offset for the navbar height
@@ -545,7 +509,6 @@ export default function Navbar({ onNavigate }: NavbarProps) {
       // Determine which section is currently in view
       sections.forEach((section) => {
         const sectionTop = section.getBoundingClientRect().top + window.scrollY;
-        // Fix: Type cast to HTMLElement to access offsetHeight
         const sectionHeight = (section as HTMLElement).offsetHeight || 0;
         const sectionBottom = sectionTop + sectionHeight;
 
@@ -576,6 +539,14 @@ export default function Navbar({ onNavigate }: NavbarProps) {
       onNavigate(sectionId);
     }
     setIsOpen(false); // Close mobile menu if open
+  };
+
+  // Handle key events for profile button
+  const handleProfileKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      toggleProfile();
+    }
   };
 
   // Animation variants for nav items
@@ -614,13 +585,19 @@ export default function Navbar({ onNavigate }: NavbarProps) {
       <nav className="fixed top-0 w-full z-40 backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <div
-              className="cursor-pointer"
+            {/* Logo - fixed accessibility */}
+            <motion.button
+              aria-label="Go to home"
+              className="cursor-pointer bg-transparent border-none p-0"
               onClick={() => handleNavigation("home")}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  handleNavigation("home");
+                }
+              }}
             >
               <Logo />
-            </div>
+            </motion.button>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-3">
@@ -636,11 +613,14 @@ export default function Navbar({ onNavigate }: NavbarProps) {
                     variants={itemVariants}
                   >
                     <motion.a
+                      aria-label={`Go to ${item.label}`}
                       className={`relative px-2 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer flex items-center ${
                         isActive
                           ? "text-purple-600 dark:text-purple-400"
                           : "text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400"
                       }`}
+                      role="button"
+                      tabIndex={0}
                       whileHover={{
                         scale: 1.1,
                         transition: {
@@ -650,6 +630,11 @@ export default function Navbar({ onNavigate }: NavbarProps) {
                         },
                       }}
                       onClick={() => handleNavigation(item.sectionId)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          handleNavigation(item.sectionId);
+                        }
+                      }}
                     >
                       {item.label}
                       {isActive && (
@@ -682,6 +667,7 @@ export default function Navbar({ onNavigate }: NavbarProps) {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={toggleProfile}
+                onKeyDown={handleProfileKeyDown}
               >
                 <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-white">
                   <Image
@@ -712,12 +698,13 @@ export default function Navbar({ onNavigate }: NavbarProps) {
 
               {/* Connect Button */}
               <motion.button
+                aria-label="Let&apos;s connect"
                 className="ml-4 hidden sm:flex px-4 py-2 rounded-md bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium text-sm shadow-lg shadow-purple-500/20"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => handleNavigation("contact")}
               >
-                <span>Let's Connect</span>
+                <span>Let&apos;s Connect</span>
                 <motion.span
                   className="ml-2"
                   initial={{ x: 0 }}
@@ -763,8 +750,9 @@ export default function Navbar({ onNavigate }: NavbarProps) {
                       initial="hidden"
                       variants={itemVariants}
                     >
-                      <motion.div
-                        className={`flex items-center px-3 py-2 rounded-md text-base font-medium cursor-pointer ${
+                      <motion.button
+                        aria-label={`Go to ${item.label}`}
+                        className={`flex items-center px-3 py-2 rounded-md text-base font-medium cursor-pointer w-full text-left ${
                           isActive
                             ? "text-purple-600 dark:text-purple-400 bg-gray-100 dark:bg-gray-800"
                             : "text-gray-700 dark:text-gray-300"
@@ -773,7 +761,7 @@ export default function Navbar({ onNavigate }: NavbarProps) {
                         onClick={() => handleNavigation(item.sectionId)}
                       >
                         {item.label}
-                      </motion.div>
+                      </motion.button>
                     </motion.div>
                   );
                 })}
@@ -784,12 +772,13 @@ export default function Navbar({ onNavigate }: NavbarProps) {
                   variants={itemVariants}
                 >
                   <motion.button
+                    aria-label="Let&apos;s connect"
                     className="w-full mt-3 px-4 py-2 rounded-md bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium text-sm shadow-lg shadow-purple-500/20"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => handleNavigation("contact")}
                   >
-                    <span>Let's Connect</span>
+                    <span>Let&apos;s Connect</span>
                     <motion.span
                       className="ml-2"
                       initial={{ x: 0 }}
