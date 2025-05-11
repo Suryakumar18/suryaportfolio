@@ -27,7 +27,8 @@ const EnhancedBackground = () => {
     
     // Particle configuration
     const particleCount = Math.min(Math.floor(window.innerWidth / 10), 100);
-    const particles: any[] = [];
+   const particles = [];
+
     
     // Create particles
     for (let i = 0; i < particleCount; i++) {
